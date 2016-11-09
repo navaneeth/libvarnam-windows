@@ -1,0 +1,5 @@
+*.log
+VarnamCLR/VarnamCLRTest/obj/Debug/*
+VarnamCLR/ipch/*
+VarnamCLR/VarnamCLR/Debug/*
+VarnamCLR/VarnamCLRTest/bin/*
