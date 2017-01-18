@@ -3,3 +3,10 @@ VarnamCLR/VarnamCLRTest/obj/Debug/*
 VarnamCLR/ipch/*
 VarnamCLR/VarnamCLR/Debug/*
 VarnamCLR/VarnamCLRTest/bin/*
+ime/C++/.vs/*
+ime/C++/Debug/*
+ime/C++/SampleIME/Debug/*
+*.tlog
+*.obj
+*.pdb
+*.idb
