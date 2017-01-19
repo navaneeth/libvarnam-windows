@@ -424,8 +424,8 @@ HRESULT CSampleIME::GetLayout(_Out_ TKBLayoutType *ptkblayoutType, _Out_ WORD *p
     HRESULT hr = E_INVALIDARG;
     if ((ptkblayoutType != nullptr) && (pwPreferredLayoutId != nullptr))
     {
-        *ptkblayoutType = TKBLT_OPTIMIZED;
-        *pwPreferredLayoutId = TKBL_OPT_SIMPLIFIED_CHINESE_PINYIN;
+        *ptkblayoutType = TKBLT_CLASSIC;
+        *pwPreferredLayoutId = TKBL_UNDEFINED;
         hr = S_OK;
     }
     return hr;

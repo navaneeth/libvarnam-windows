@@ -10,3 +10,5 @@ ime/C++/SampleIME/Debug/*
 *.obj
 *.pdb
 *.idb
+ime/C++/VarnamIME.VC.VC.opendb
+ime/C++/VarnamIME.VC.db
