@@ -98,6 +98,7 @@ BOOL CSampleIME::_AddTextProcessorEngine()
 
 CCompositionProcessorEngine::CCompositionProcessorEngine()
 {
+	varnam_handle = nullptr;
     _pTableDictionaryEngine = nullptr;
     _pDictionaryFile = nullptr;
 
@@ -236,6 +237,7 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
     SetupKeystroke();
     SetupConfiguration();
     SetupDictionaryFile();
+	SetupVarnamHandle();
 
 Exit:
     return ret;
@@ -968,6 +970,34 @@ BOOL CCompositionProcessorEngine::InitLanguageBar(_In_ CLangBarItemButton *pLang
         }
     }
     return FALSE;
+}
+
+BOOL CCompositionProcessorEngine::SetupVarnamHandle()
+{
+	varnam_set_symbols_dir("C:\\Users\\nkn\\Documents\\libvarnam-3.2.5\\schemes");
+	char *msg;
+	int rc = varnam_init("C:\\Users\\nkn\\Documents\\libvarnam-3.2.5\\schemes\\ml.vst", &varnam_handle, &msg);
+	if (rc != VARNAM_SUCCESS)
+	{
+		MessageBoxA(
+			NULL,
+			msg,
+			"Account Details",
+			MB_ICONWARNING | MB_CANCELTRYCONTINUE | MB_DEFBUTTON2
+		);
+		
+		return FALSE;
+	}
+	else {
+		MessageBoxA(
+			NULL,
+			"Varnam initialized",
+			"Account Details",
+			MB_ICONWARNING | MB_CANCELTRYCONTINUE | MB_DEFBUTTON2
+		);
+	}
+
+	return TRUE;
 }
 
 //+---------------------------------------------------------------------------
