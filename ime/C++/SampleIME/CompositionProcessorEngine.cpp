@@ -15,6 +15,7 @@
 #include "Compartment.h"
 #include "LanguageBar.h"
 #include "RegKey.h"
+#include <plog/Log.h>
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -98,7 +99,7 @@ BOOL CSampleIME::_AddTextProcessorEngine()
 
 CCompositionProcessorEngine::CCompositionProcessorEngine()
 {
-	varnam_handle = nullptr;
+	_varnamEngine = nullptr;
     _pTableDictionaryEngine = nullptr;
     _pDictionaryFile = nullptr;
 
@@ -224,6 +225,11 @@ BOOL CCompositionProcessorEngine::SetupLanguageProfile(LANGID langid, REFGUID gu
         ret = FALSE;
         goto Exit;
     }
+
+	setlocale(LC_ALL, "en_US.utf8");
+
+	// Enable logger
+	plog::init(plog::debug, "C:\\Users\\nkn\\AppData\\Local\\Temp\\varnamime.txt");
 
     _isComLessMode = isComLessMode;
     _langid = langid;
@@ -387,8 +393,8 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
     if (!IsDictionaryAvailable())
     {
         return;
-    }
-
+    }	
+	
     if (isIncrementalWordSearch)
     {
         CStringRange wildcardSearch;
@@ -420,7 +426,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
         if (!isFindWildcard)
         {
             // add wildcard char for incremental search
-            StringCchCat(pwch, keystrokeBufLen, L"*");
+            //StringCchCat(pwch, keystrokeBufLen, L"*");
         }
 
         size_t len = 0;
@@ -433,7 +439,11 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
             return;
         }
 
-        _pTableDictionaryEngine->CollectWordForWildcard(&wildcardSearch, pCandidateList);
+		LOGD << "Transliterating: " << wildcardSearch.Get();
+
+		_varnamEngine->Transliterate(&wildcardSearch, pCandidateList);
+        //_pTableDictionaryEngine->CollectWordForWildcard(&wildcardSearch, pCandidateList);
+		LOGD << "Candidates count: " << pCandidateList->Count();
 
         if (0 >= pCandidateList->Count())
         {
@@ -442,7 +452,8 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
 
         if (IsKeystrokeSort())
         {
-            _pTableDictionaryEngine->SortListItemByFindKeyCode(pCandidateList);
+			LOGD << "It is a keystroke sort";
+            //_pTableDictionaryEngine->SortListItemByFindKeyCode(pCandidateList);
         }
 
         // Incremental search would show keystroke data from all candidate list items
@@ -974,18 +985,19 @@ BOOL CCompositionProcessorEngine::InitLanguageBar(_In_ CLangBarItemButton *pLang
 
 BOOL CCompositionProcessorEngine::SetupVarnamHandle()
 {
-	varnam_set_symbols_dir("C:\\Users\\nkn\\Documents\\libvarnam-3.2.5\\schemes");
-	char *msg;
-	int rc = varnam_init("C:\\Users\\nkn\\Documents\\libvarnam-3.2.5\\schemes\\ml.vst", &varnam_handle, &msg);
-	if (rc != VARNAM_SUCCESS)
+	_varnamEngine = new (std::nothrow) VarnamEngine();
+	BOOL initialized = _varnamEngine->Initialize();
+	
+	if (!initialized)
 	{
 		MessageBoxA(
 			NULL,
-			msg,
-			"Account Details",
-			MB_ICONWARNING | MB_CANCELTRYCONTINUE | MB_DEFBUTTON2
+			_varnamEngine->GetLastError(),
+			"Varnam",
+			MB_ICONERROR
 		);
-		
+
+		LOGD << "Varnam initialization failed: " << _varnamEngine->GetLastError();		
 		return FALSE;
 	}
 	else {

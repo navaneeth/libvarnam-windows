@@ -15,7 +15,7 @@
 #include "FileMapping.h"
 #include "Compartment.h"
 #include "define.h"
-#include "varnam.h"
+#include "VarnamEngine.h"
 
 class CCompositionProcessorEngine
 {
@@ -132,10 +132,10 @@ private:
     };
     _KEYSTROKE _keystrokeTable[26];
 
-    CTableDictionaryEngine* _pTableDictionaryEngine;
-    CStringRange _keystrokeBuffer;
+	VarnamEngine* _varnamEngine;
 
-	varnam* varnam_handle;
+    CTableDictionaryEngine* _pTableDictionaryEngine;
+    CStringRange _keystrokeBuffer;	
 
     BOOL _hasWildcardIncludedInKeystrokeBuffer;
 

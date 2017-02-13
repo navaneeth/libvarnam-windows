@@ -9,6 +9,7 @@
 #include "Globals.h"
 #include "BaseWindow.h"
 #include "CandidateWindow.h"
+#include <plog/Log.h>
 
 //+---------------------------------------------------------------------------
 //
@@ -704,6 +705,7 @@ void CCandidateWindow::_DrawBorder(_In_ HWND wndHandle, _In_ int cx)
 
 void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _In_ BOOL isAddFindKeyCode)
 {
+	LOGD << "Inside add string. " << pCandidateItem->_ItemString.Get();
     DWORD_PTR dwItemString = pCandidateItem->_ItemString.GetLength();
     const WCHAR* pwchString = nullptr;
     if (dwItemString)
@@ -711,6 +713,7 @@ void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _I
         pwchString = new (std::nothrow) WCHAR[ dwItemString ];
         if (!pwchString)
         {
+			LOGD << "Return 1";
             return;
         }
         memcpy((void*)pwchString, pCandidateItem->_ItemString.Get(), dwItemString * sizeof(WCHAR));
@@ -718,8 +721,9 @@ void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _I
 
     DWORD_PTR itemWildcard = pCandidateItem->_FindKeyCode.GetLength();
     const WCHAR* pwchWildcard = nullptr;
-    if (itemWildcard && isAddFindKeyCode)
+    /*if (itemWildcard && isAddFindKeyCode)
     {
+		LOGD << "Inside itemWildcard && isAddFindKeyCode";
         pwchWildcard = new (std::nothrow) WCHAR[ itemWildcard ];
         if (!pwchWildcard)
         {
@@ -727,10 +731,11 @@ void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _I
             {
                 delete [] pwchString;
             }
+			LOGD << "Return 2";
             return;
         }
         memcpy((void*)pwchWildcard, pCandidateItem->_FindKeyCode.Get(), itemWildcard * sizeof(WCHAR));
-    }
+    }*/
 
     CCandidateListItem* pLI = nullptr;
     pLI = _candidateList.Append();
@@ -751,10 +756,12 @@ void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _I
 
     if (pwchString)
     {
+		LOGD << "Inside pwchString";
         pLI->_ItemString.Set(pwchString, dwItemString);
     }
     if (pwchWildcard)
     {
+		LOGD << "Inside pwchWildcard";
         pLI->_FindKeyCode.Set(pwchWildcard, itemWildcard);
     }
 

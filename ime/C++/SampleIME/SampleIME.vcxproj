@@ -65,6 +65,7 @@
     <ClInclude Include="TfTextLayoutSink.h" />
     <ClInclude Include="TipCandidateList.h" />
     <ClInclude Include="TipCandidateString.h" />
+    <ClInclude Include="VarnamEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ActiveLanguageProfileNotifySink.cpp" />
@@ -113,6 +114,7 @@
     <ClCompile Include="ThreadMgrEventSink.cpp" />
     <ClCompile Include="TipCandidateList.cpp" />
     <ClCompile Include="TipCandidateString.cpp" />
+    <ClCompile Include="VarnamEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SampleIME.rc" />
@@ -169,7 +171,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\nkn\Documents\libvarnam-3.2.5;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\deps;C:\Users\nkn\Documents\libvarnam-3.2.5;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
