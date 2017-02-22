@@ -11,6 +11,7 @@
 #include "SampleIME.h"
 #include "CandidateListUIPresenter.h"
 #include "CompositionProcessorEngine.h"
+#include <plog/Log.h>
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -121,6 +122,7 @@ HRESULT CSampleIME::_HandleCompositionInput(TfEditCookie ec, _In_ ITfContext *pC
 
     if ((_pCandidateListUIPresenter != nullptr) && (_candidateMode != CANDIDATE_INCREMENTAL))
     {
+		LOGD << "Just about to finalize composition";
         _HandleCompositionFinalize(ec, pContext, FALSE);
     }
 
@@ -279,6 +281,7 @@ HRESULT CSampleIME::_CreateAndStartCandidate(_In_ CCompositionProcessorEngine *p
 
 HRESULT CSampleIME::_HandleCompositionFinalize(TfEditCookie ec, _In_ ITfContext *pContext, BOOL isCandidateList)
 {
+	LOGD << "Finalizing composition";
     HRESULT hr = S_OK;
 
     if (isCandidateList && _pCandidateListUIPresenter)

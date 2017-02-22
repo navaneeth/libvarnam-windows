@@ -538,7 +538,7 @@ void CCompositionProcessorEngine::GetCandidateStringInConverted(CStringRange &se
 
     if (IsKeystrokeSort())
     {
-        _pTableDictionaryEngine->SortListItemByFindKeyCode(pCandidateList);
+        //_pTableDictionaryEngine->SortListItemByFindKeyCode(pCandidateList);
     }
 
     wildcardSearch.Clear();
