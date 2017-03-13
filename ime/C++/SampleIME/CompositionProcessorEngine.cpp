@@ -439,11 +439,10 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
             return;
         }
 
-		LOGD << "Transliterating: " << wildcardSearch.Get();
+		//LOGD << "Transliterating: " << wildcardSearch.Get();
 
 		_varnamEngine->Transliterate(&wildcardSearch, pCandidateList);
-        //_pTableDictionaryEngine->CollectWordForWildcard(&wildcardSearch, pCandidateList);
-		LOGD << "Candidates count: " << pCandidateList->Count();
+        //_pTableDictionaryEngine->CollectWordForWildcard(&wildcardSearch, pCandidateList);		
 
         if (0 >= pCandidateList->Count())
         {
@@ -451,8 +450,7 @@ void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCand
         }
 
         if (IsKeystrokeSort())
-        {
-			LOGD << "It is a keystroke sort";
+        {			
             //_pTableDictionaryEngine->SortListItemByFindKeyCode(pCandidateList);
         }
 

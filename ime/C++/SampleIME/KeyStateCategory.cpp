@@ -6,6 +6,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved
 
 #include "KeyStateCategory.h"
+#include <plog/Log.h>
 
 CKeyStateCategoryFactory* CKeyStateCategoryFactory::_instance;
 
@@ -233,43 +234,51 @@ CKeyStateComposing::CKeyStateComposing(_In_ CSampleIME *pTextService) : CKeyStat
 
 HRESULT CKeyStateComposing::HandleKeyInput(KeyHandlerEditSessionDTO dto)
 {
+	LOGD << "CKeyStateComposing::HandleKeyInput()";
     return _pTextService->_HandleCompositionInput(dto.ec, dto.pContext, dto.wch);
 }
 
 HRESULT CKeyStateComposing::HandleKeyFinalizeTextStoreAndInput(KeyHandlerEditSessionDTO dto)
 {
+	LOGD << "CKeyStateComposing::HandleKeyFinalizeTextStoreAndInput()";
     _pTextService->_HandleCompositionFinalize(dto.ec, dto.pContext, FALSE);
     return _pTextService->_HandleCompositionInput(dto.ec, dto.pContext, dto.wch);
 }
 
 HRESULT CKeyStateComposing::HandleKeyFinalizeTextStore(KeyHandlerEditSessionDTO dto)
 {
+	LOGD << "CKeyStateComposing::HandleKeyFinalizeTextStore()";
     return _pTextService->_HandleCompositionFinalize(dto.ec, dto.pContext, FALSE);
 }
 
 HRESULT CKeyStateComposing::HandleKeyFinalizeCandidatelistAndInput(KeyHandlerEditSessionDTO dto)
 {
+	LOGD << "CKeyStateComposing::HandleKeyFinalizeCandidatelistAndInput()";
     _pTextService->_HandleCompositionFinalize(dto.ec, dto.pContext, TRUE);
     return _pTextService->_HandleCompositionInput(dto.ec, dto.pContext, dto.wch);
 }
 
 HRESULT CKeyStateComposing::HandleKeyFinalizeCandidatelist(KeyHandlerEditSessionDTO dto)
 {
+	LOGD << "CKeyStateComposing::HandleKeyFinalizeCandidatelist()";
     return _pTextService->_HandleCompositionFinalize(dto.ec, dto.pContext, TRUE);
 }
 
 HRESULT CKeyStateComposing::HandleKeyConvert(KeyHandlerEditSessionDTO dto)
 {
+	LOGD << "CKeyStateComposing::HandleKeyConvert()";
     return _pTextService->_HandleCompositionConvert(dto.ec, dto.pContext, FALSE);
 }
 
 HRESULT CKeyStateComposing::HandleKeyConvertWildCard(KeyHandlerEditSessionDTO dto)
 {
+	LOGD << "CKeyStateComposing::HandleKeyConvertWildCard()";
     return _pTextService->_HandleCompositionConvert(dto.ec, dto.pContext, TRUE);
 }
 
 HRESULT CKeyStateComposing::HandleKeyCancel(KeyHandlerEditSessionDTO dto)
 {
+	LOGD << "CKeyStateComposing::HandleKeyCancel()";
     return _pTextService->_HandleCancel(dto.ec, dto.pContext);
 }
 
@@ -316,6 +325,7 @@ HRESULT CKeyStateCandidate::HandleKeyFinalizeCandidatelistAndInput(KeyHandlerEdi
 //_HandleCandidateConvert
 HRESULT CKeyStateCandidate::HandleKeyConvert(KeyHandlerEditSessionDTO dto)
 {
+	LOGD << "HandleKeyConvert";
     return _pTextService->_HandleCandidateConvert(dto.ec, dto.pContext);
 }
 

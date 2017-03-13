@@ -34,15 +34,13 @@ VOID VarnamEngine::Transliterate(_In_ CStringRange *psrgKeyCode, _Inout_ CSample
 	char* text = (char*) malloc(inputLen + 1);
 	wcstombs(text, psrgKeyCode->Get(), inputLen);
 	text[inputLen] = '\0';
-	varray* words;	
-	LOGD << "Transliterating: " << text;
+	varray* words;		
 	int rc = varnam_transliterate(_handle, text, &words);
 	if (rc != VARNAM_SUCCESS)
 	{
 		LOGD << "Failed to transliterate: " << text << ". " << varnam_get_last_error(_handle);
 	}
-	else {
-		LOGD << "Words count: " << varray_length(words);
+	else {		
 		for (int i = 0; i < varray_length(words); i++) {			
 			vword* word = (vword*) varray_get(words, i);
 			CCandidateListItem* pLI = nullptr;
@@ -59,12 +57,8 @@ VOID VarnamEngine::Transliterate(_In_ CStringRange *psrgKeyCode, _Inout_ CSample
 					wWord,
 					wordLen
 				);				
-				pLI->_ItemString.Set(wWord, rc);
-				//LOGD << "Word len " << wordLen;
-				//LOGD << "MultiByteToWideChar() = " << rc;
-				//LOGD << "Word: " << wWord;
+				pLI->_ItemString.Set(wWord, rc);				
 			}
 		}		
-	}
-	LOGD << "Done";
+	}	
 }

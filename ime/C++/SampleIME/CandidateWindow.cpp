@@ -704,16 +704,14 @@ void CCandidateWindow::_DrawBorder(_In_ HWND wndHandle, _In_ int cx)
 //----------------------------------------------------------------------------
 
 void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _In_ BOOL isAddFindKeyCode)
-{
-	LOGD << "Inside add string. " << pCandidateItem->_ItemString.Get();
+{	
     DWORD_PTR dwItemString = pCandidateItem->_ItemString.GetLength();
     const WCHAR* pwchString = nullptr;
     if (dwItemString)
     {
         pwchString = new (std::nothrow) WCHAR[ dwItemString ];
         if (!pwchString)
-        {
-			LOGD << "Return 1";
+        {			
             return;
         }
         memcpy((void*)pwchString, pCandidateItem->_ItemString.Get(), dwItemString * sizeof(WCHAR));
@@ -755,13 +753,11 @@ void CCandidateWindow::_AddString(_Inout_ CCandidateListItem *pCandidateItem, _I
     }
 
     if (pwchString)
-    {
-		LOGD << "Inside pwchString";
+    {		
         pLI->_ItemString.Set(pwchString, dwItemString);
     }
     if (pwchWildcard)
-    {
-		LOGD << "Inside pwchWildcard";
+    {		
         pLI->_FindKeyCode.Set(pwchWildcard, itemWildcard);
     }
 

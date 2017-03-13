@@ -11,6 +11,7 @@
 #include "CandidateListUIPresenter.h"
 #include "CompositionProcessorEngine.h"
 #include "SampleIMEBaseStructure.h"
+#include <plog/Log.h>
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -55,7 +56,7 @@ HRESULT CSampleIME::_HandleCandidateFinalize(TfEditCookie ec, _In_ ITfContext *p
     }
 
 NoPresenter:
-
+	LOGD << "Inside Not Presenter";
     _HandleComplete(ec, pContext);
 
     return hr;
@@ -87,8 +88,11 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     CStringRange candidateString;
     CSampleImeArray<CCandidateListItem> candidatePhraseList;
 
+	LOGD << "Inside handle candidate";
+
     if (nullptr == _pCandidateListUIPresenter)
     {
+		LOGD << "_pCandidateListUIPresenter is null";
         hrReturn = S_OK;
         goto Exit;
     }
@@ -96,6 +100,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     candidateLen = _pCandidateListUIPresenter->_GetSelectedCandidateString(&pCandidateString);
     if (0 == candidateLen)
     {
+		LOGD << "Candidate length is 0";
         hrReturn = S_FALSE;
         goto Exit;
     }
@@ -117,6 +122,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     CCandidateListUIPresenter* pTempCandListUIPresenter = nullptr;
     if (candidatePhraseList.Count())
     {
+		LOGD << "Going inside phraselist count()";
         tempCandMode = CANDIDATE_WITH_NEXT_COMPOSITION;
 
         pTempCandListUIPresenter = new (std::nothrow) CCandidateListUIPresenter(this, Global::AtomCandidateWindow,
@@ -125,6 +131,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
             FALSE);
         if (nullptr == pTempCandListUIPresenter)
         {
+			LOGD << "What the fuck!";
             hrReturn = E_OUTOFMEMORY;
             goto Exit;
         }
@@ -139,19 +146,29 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
         ITfRange* pRange = nullptr;
         if (_pComposition->GetRange(&pRange) == S_OK)
         {
+			LOGD << "In range";
             if (pTempCandListUIPresenter)
             {
                 hrStartCandidateList = pTempCandListUIPresenter->_StartCandidateList(_tfClientId, pDocumentMgr, pContext, ec, pRange, _pCompositionProcessorEngine->GetCandidateWindowWidth());
-            } 
+				LOGD << "hrStartCandidateList = " << hrStartCandidateList;
+			}
+			else {
+				LOGD << "pTempCandListUIPresenter is not initialized";
+			}
 
             pRange->Release();
-        }
+		}
+		else {
+			LOGD << "Not in range";
+		}
         pDocumentMgr->Release();
     }
 
     // set up candidate list if it is being shown
     if (SUCCEEDED(hrStartCandidateList))
     {
+		// This is ok not to get inside
+		LOGD << "About to delete";
         pTempCandListUIPresenter->_SetTextColor(RGB(0, 0x80, 0), GetSysColor(COLOR_WINDOW));    // Text color is green
         pTempCandListUIPresenter->_SetFillColor((HBRUSH)(COLOR_WINDOW+1));    // Background color is window
         pTempCandListUIPresenter->_SetText(&candidatePhraseList, FALSE);
@@ -168,6 +185,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
 
             _candidateMode = CANDIDATE_NONE;
             _isCandidateWithWildcard = FALSE;
+			LOGD << "All reset";
         }
 
         if (hrReturn == S_OK)
@@ -181,6 +199,7 @@ HRESULT CSampleIME::_HandleCandidateWorker(TfEditCookie ec, _In_ ITfContext *pCo
     }
     else
     {
+		LOGD << "Not success.  Calling _HandleCandidateFinalize()";
         hrReturn = _HandleCandidateFinalize(ec, pContext);
     }
 
@@ -768,16 +787,22 @@ HRESULT CCandidateListUIPresenter::_StartCandidateList(TfClientId tfClientId, _I
 
     HRESULT hr = E_FAIL;
 
+	LOGD << "Starting candidate list";
+
     if (FAILED(_StartLayout(pContextDocument, ec, pRangeComposition)))
     {
+		LOGD << "Start layout failed";
         goto Exit;
     }
 
     BeginUIElement();
 
+	LOGD << "UI element begun";
+
     hr = MakeCandidateWindow(pContextDocument, wndWidth);
     if (FAILED(hr))
     {
+		LOGD << "Failed to make candidate window";
         goto Exit;
     }
 
