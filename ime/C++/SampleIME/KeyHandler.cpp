@@ -66,7 +66,6 @@ VOID CSampleIME::_DeleteCandidateList(BOOL isForce, _In_opt_ ITfContext *pContex
 
         _candidateMode = CANDIDATE_NONE;
         _isCandidateWithWildcard = FALSE;
-		LOGD << "Ending candidate list";
     }
 }
 
@@ -78,7 +77,6 @@ VOID CSampleIME::_DeleteCandidateList(BOOL isForce, _In_opt_ ITfContext *pContex
 
 HRESULT CSampleIME::_HandleComplete(TfEditCookie ec, _In_ ITfContext *pContext)
 {
-	LOGD << "Inside _HandleComplete()";
     _DeleteCandidateList(FALSE, pContext);
 
     // just terminate the composition
@@ -122,40 +120,32 @@ HRESULT CSampleIME::_HandleCompositionInput(TfEditCookie ec, _In_ ITfContext *pC
     CCompositionProcessorEngine* pCompositionProcessorEngine = nullptr;
     pCompositionProcessorEngine = _pCompositionProcessorEngine;
 
-	LOGD << "_pCandidateListUIPresenter = " << (_pCandidateListUIPresenter != nullptr);
-	LOGD << "_candidateMode = " << (_candidateMode);
-
     if ((_pCandidateListUIPresenter != nullptr) && (_candidateMode != CANDIDATE_INCREMENTAL))
     {
-		LOGD << "Just about to finalize composition";
         _HandleCompositionFinalize(ec, pContext, FALSE);
     }
 
     // Start the new (std::nothrow) compositon if there is no composition.
     if (!_IsComposing())
     {
-		LOGD << "Not composing... will start to compose";
         _StartComposition(pContext);
 	}		 
 
     // first, test where a keystroke would go in the document if we did an insert
     if (pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &fetched) != S_OK || fetched != 1)
     {
-		LOGD << "Will not go in to document";
         return S_FALSE;
     }
 
     // is the insertion point covered by a composition?
     if (SUCCEEDED(_pComposition->GetRange(&pRangeComposition)))
     {
-		LOGD << "Insertion point is covered";
         isCovered = _IsRangeCovered(ec, tfSelection.range, pRangeComposition);
 
         pRangeComposition->Release();
 
         if (!isCovered)
         {			
-			LOGD << "EXIT as it is not covered";
             goto Exit;
         }
     }
@@ -194,7 +184,6 @@ HRESULT CSampleIME::_HandleCompositionInputWorker(_In_ CCompositionProcessorEngi
         hr = _AddComposingAndChar(ec, pContext, readingStrings.GetAt(index));
         if (FAILED(hr))
         {
-			LOGD << "Failed to add composing character";
             return hr;
         }
     }
@@ -208,27 +197,22 @@ HRESULT CSampleIME::_HandleCompositionInputWorker(_In_ CCompositionProcessorEngi
 
     if ((candidateList.Count()))
     {
-		LOGD << "Inside first if";
         hr = _CreateAndStartCandidate(pCompositionProcessorEngine, ec, pContext);
         if (SUCCEEDED(hr))
         {
-			LOGD << "Inside succeeded";
             _pCandidateListUIPresenter->_ClearList();
             _pCandidateListUIPresenter->_SetText(&candidateList, TRUE);
         }
     }
     else if (_pCandidateListUIPresenter)
     {
-		LOGD << "Inside second if";
         _pCandidateListUIPresenter->_ClearList();
     }
     else if (readingStrings.Count() && isWildcardIncluded)
     {
-		LOGD << "Inside thrird if";
         hr = _CreateAndStartCandidate(pCompositionProcessorEngine, ec, pContext);
         if (SUCCEEDED(hr))
         {
-			LOGD << "Success";
             _pCandidateListUIPresenter->_ClearList();
         }
     }
@@ -296,7 +280,6 @@ HRESULT CSampleIME::_CreateAndStartCandidate(_In_ CCompositionProcessorEngine *p
 
 HRESULT CSampleIME::_HandleCompositionFinalize(TfEditCookie ec, _In_ ITfContext *pContext, BOOL isCandidateList)
 {
-	LOGD << "Finalizing composition";
     HRESULT hr = S_OK;
 
     if (isCandidateList && _pCandidateListUIPresenter)
@@ -310,8 +293,6 @@ HRESULT CSampleIME::_HandleCompositionFinalize(TfEditCookie ec, _In_ ITfContext 
         CStringRange candidateString;
         candidateString.Set(pCandidateString, candidateLen);
 
-		LOGD << "Candidate is : " << candidateString.Get();
-
         if (candidateLen)
         {
             // Finalize character
@@ -320,9 +301,6 @@ HRESULT CSampleIME::_HandleCompositionFinalize(TfEditCookie ec, _In_ ITfContext 
             {
                 return hr;
             }
-		}
-		else {
-			LOGD << "No candidate available";
 		}
     }
     else

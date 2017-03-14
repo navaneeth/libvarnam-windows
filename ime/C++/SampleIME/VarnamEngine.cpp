@@ -28,6 +28,17 @@ const char* VarnamEngine::GetLastError()
 	return _msg;
 }
 
+// Convert an UTF8 string to a wide Unicode String
+WCHAR* utf8_decode_to_wide(const char* str, int* size)
+{
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, str, (int)strlen(str), NULL, 0);
+	WCHAR* wstrTo = (WCHAR*)malloc(size_needed);
+	//std::wstring* wstrTo = new std::wstring(size_needed, 0);
+	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)strlen(str), wstrTo, size_needed);
+	*size = size_needed;
+	return wstrTo;
+}
+
 VOID VarnamEngine::Transliterate(_In_ CStringRange *psrgKeyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
 {
 	const DWORD_PTR inputLen = psrgKeyCode->GetLength();
@@ -47,17 +58,13 @@ VOID VarnamEngine::Transliterate(_In_ CStringRange *psrgKeyCode, _Inout_ CSample
 			pLI = pItemList->Append();
 			if (pLI)
 			{				
-				size_t wordLen = strlen(word->text);
-				WCHAR* wWord = (WCHAR*)malloc(wordLen + 1);
-				int rc = MultiByteToWideChar(
-					CP_UTF8,
-					0,
-					word->text,
-					-1,
-					wWord,
-					wordLen
-				);				
-				pLI->_ItemString.Set(wWord, rc);				
+				//size_t wordLen = strlen(word->text);
+				//WCHAR* wWord = (WCHAR*)malloc(wordLen + 1);
+				int size;
+				WCHAR* wWord = utf8_decode_to_wide(word->text, &size);
+
+				pLI->_ItemString.Set(wWord, size);
+				//pLI->_ItemString.Set(L"na", 2);
 			}
 		}		
 	}	
