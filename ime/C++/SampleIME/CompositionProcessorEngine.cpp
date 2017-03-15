@@ -986,25 +986,9 @@ BOOL CCompositionProcessorEngine::SetupVarnamHandle()
 	_varnamEngine = new (std::nothrow) VarnamEngine();
 	BOOL initialized = _varnamEngine->Initialize();
 	
-	if (!initialized)
-	{
-		MessageBoxA(
-			NULL,
-			_varnamEngine->GetLastError(),
-			"Varnam",
-			MB_ICONERROR
-		);
-
+	if (!initialized) {
 		LOGD << "Varnam initialization failed: " << _varnamEngine->GetLastError();		
 		return FALSE;
-	}
-	else {
-		MessageBoxA(
-			NULL,
-			"Varnam initialized",
-			"Account Details",
-			MB_ICONWARNING | MB_CANCELTRYCONTINUE | MB_DEFBUTTON2
-		);
 	}
 
 	return TRUE;

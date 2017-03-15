@@ -13,13 +13,13 @@ VarnamEngine::VarnamEngine()
 }
 
 BOOL VarnamEngine::Initialize()
-{	
+{
 	int rc = varnam_init("C:\\Users\\nkn\\Documents\\libvarnam-3.2.5\\schemes\\ml.vst", &_handle, &_msg);
 	if (rc != VARNAM_SUCCESS)
-	{		
+	{
 		return FALSE;
 	}
-	
+
 	return TRUE;
 }
 
@@ -28,44 +28,51 @@ const char* VarnamEngine::GetLastError()
 	return _msg;
 }
 
-// Convert an UTF8 string to a wide Unicode String
-WCHAR* utf8_decode_to_wide(const char* str, int* size)
+WCHAR* convert_to_wstring(const char* str)
 {
-	int size_needed = MultiByteToWideChar(CP_UTF8, 0, str, (int)strlen(str), NULL, 0);
-	WCHAR* wstrTo = (WCHAR*)malloc(size_needed);
-	//std::wstring* wstrTo = new std::wstring(size_needed, 0);
-	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)strlen(str), wstrTo, size_needed);
-	*size = size_needed;
+	int str_len = (int)strlen(str);
+	int num_chars = MultiByteToWideChar(CP_UTF8, 0, str, str_len, NULL, 0);
+	WCHAR* wstrTo = (WCHAR*)malloc((num_chars + 1) * sizeof(WCHAR));
+	if (wstrTo)
+	{
+		MultiByteToWideChar(CP_UTF8, 0, str, str_len, wstrTo, num_chars);
+		wstrTo[num_chars] = L'\0';
+	}
 	return wstrTo;
+}
+
+CHAR* convert_from_wstring(const WCHAR* wstr)
+{
+	int wstr_len = (int)wcslen(wstr);
+	int num_chars = WideCharToMultiByte(CP_UTF8, 0, wstr, wstr_len, NULL, 0, NULL, NULL);
+	CHAR* strTo = (CHAR*)malloc((num_chars + 1) * sizeof(CHAR));
+	if (strTo)
+	{
+		WideCharToMultiByte(CP_UTF8, 0, wstr, wstr_len, strTo, num_chars, NULL, NULL);
+		strTo[num_chars] = '\0';
+	}
+	return strTo;
 }
 
 VOID VarnamEngine::Transliterate(_In_ CStringRange *psrgKeyCode, _Inout_ CSampleImeArray<CCandidateListItem> *pItemList)
 {
-	const DWORD_PTR inputLen = psrgKeyCode->GetLength();
-	char* text = (char*) malloc(inputLen + 1);
-	wcstombs(text, psrgKeyCode->Get(), inputLen);
-	text[inputLen] = '\0';
-	varray* words;		
-	int rc = varnam_transliterate(_handle, text, &words);
-	if (rc != VARNAM_SUCCESS)
-	{
-		LOGD << "Failed to transliterate: " << text << ". " << varnam_get_last_error(_handle);
+	char* input_text = convert_from_wstring(psrgKeyCode->Get());
+	varray* words;
+	int rc = varnam_transliterate(_handle, input_text, &words);
+	if (rc != VARNAM_SUCCESS) {
+		LOGD << "Failed to transliterate: " << input_text << ". " << varnam_get_last_error(_handle);
 	}
-	else {		
-		for (int i = 0; i < varray_length(words); i++) {			
-			vword* word = (vword*) varray_get(words, i);
+	else {
+		for (int i = 0; i < varray_length(words); i++) {
 			CCandidateListItem* pLI = nullptr;
 			pLI = pItemList->Append();
-			if (pLI)
-			{				
-				//size_t wordLen = strlen(word->text);
-				//WCHAR* wWord = (WCHAR*)malloc(wordLen + 1);
-				int size;
-				WCHAR* wWord = utf8_decode_to_wide(word->text, &size);
-
-				pLI->_ItemString.Set(wWord, size);
-				//pLI->_ItemString.Set(L"na", 2);
+			if (pLI) {
+				vword* word = (vword*)varray_get(words, i);
+				WCHAR* word_text = convert_to_wstring(word->text);
+				pLI->_ItemString.Set(word_text, wcslen(word_text));
 			}
-		}		
-	}	
+		}
+	}
+
+	free(input_text);
 }
