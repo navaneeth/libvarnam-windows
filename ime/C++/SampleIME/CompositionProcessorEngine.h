@@ -130,7 +130,7 @@ private:
             Function = FUNCTION_NONE;
         }
     };
-    _KEYSTROKE _keystrokeTable[26];
+    _KEYSTROKE _keystrokeTable[27];
 
 	VarnamEngine* _varnamEngine;
 

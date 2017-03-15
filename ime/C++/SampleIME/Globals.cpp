@@ -290,13 +290,13 @@ BOOL CheckModifiers(UINT modCurrent, UINT mod)
         return TRUE;
     }
 
-    if (modCurrent && !mod)
+    /*if (modCurrent && !mod)
     {
         return FALSE;
-    }
+    }*/
 
     CheckMod(modCurrent, mod, ALT);
-    CheckMod(modCurrent, mod, SHIFT);
+    //CheckMod(modCurrent, mod, SHIFT);
     CheckMod(modCurrent, mod, CONTROL);
 
     return TRUE;
