@@ -9,14 +9,14 @@ VarnamEngine::VarnamEngine()
 {
 	_handle = nullptr;
 	_msg = nullptr;
-	varnam_set_symbols_dir("C:\\Users\\nkn\\Documents\\libvarnam-3.2.5\\schemes");
 }
 
 BOOL VarnamEngine::Initialize()
 {
-	int rc = varnam_init("C:\\Users\\nkn\\Documents\\libvarnam-3.2.5\\schemes\\ml.vst", &_handle, &_msg);
-	if (rc != VARNAM_SUCCESS)
-	{
+	std::string program_data(std::getenv("ALLUSERSPROFILE"));
+	std::string scheme_file = program_data + "\\" + "varnam\\schemes\\ml.vst";
+	int rc = varnam_init(scheme_file.c_str(), &_handle, &_msg);
+	if (rc != VARNAM_SUCCESS) {
 		return FALSE;
 	}
 
