@@ -397,10 +397,10 @@ void CCompositionProcessorEngine::GetReadingStrings(_Inout_ CSampleImeArray<CStr
 
 void CCompositionProcessorEngine::GetCandidateList(_Inout_ CSampleImeArray<CCandidateListItem> *pCandidateList, BOOL isIncrementalWordSearch, BOOL isWildcardSearch)
 {
-	if (!IsDictionaryAvailable())
+	/*if (!IsDictionaryAvailable())
 	{
 		return;
-	}
+	}*/
 
 	if (isIncrementalWordSearch)
 	{
@@ -1527,9 +1527,15 @@ void CCompositionProcessorEngine::InitKeyStrokeTable()
 		_keystrokeTable[i].Modifiers = 0;
 		_keystrokeTable[i].Function = FUNCTION_INPUT;
 	}
+	// SHIFT key
 	_keystrokeTable[26].VirtualKey = 16;
 	_keystrokeTable[26].Modifiers = 0;
 	_keystrokeTable[26].Function = FUNCTION_INPUT;
+
+	// TILDA key
+	/*_keystrokeTable[27].VirtualKey = 192;
+	_keystrokeTable[27].Modifiers = 0;
+	_keystrokeTable[27].Function = FUNCTION_INPUT;*/
 }
 
 void CCompositionProcessorEngine::ShowAllLanguageBarIcons()
