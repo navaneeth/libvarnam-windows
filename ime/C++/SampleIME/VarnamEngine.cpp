@@ -14,11 +14,14 @@ VarnamEngine::VarnamEngine()
 BOOL VarnamEngine::Initialize()
 {
 	std::string program_data(std::getenv("ALLUSERSPROFILE"));
-	std::string scheme_file = program_data + "\\" + "varnam\\schemes\\ml.vst";
-	int rc = varnam_init(scheme_file.c_str(), &_handle, &_msg);
+	std::string symbols_dir = program_data + "\\" + "varnam\\schemes";
+	varnam_set_symbols_dir(symbols_dir.c_str());
+	int rc = varnam_init_from_id("ml", &_handle, &_msg);
 	if (rc != VARNAM_SUCCESS) {
 		return FALSE;
 	}
+
+	LOGD << "Suggestions will be at: " << varnam_get_suggestions_file(_handle);
 
 	return TRUE;
 }
