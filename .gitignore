@@ -15,3 +15,5 @@ ime/C++/VarnamIME.VC.db
 ime/C++/Release/*
 ime/C++/SampleIME/Release/*
 ime/C++/SampleIME/deps/libvarnam/*
+ime/C++/SampleIME/x64/*
+ime/C++/x64/
