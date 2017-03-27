@@ -18,7 +18,7 @@
 #include <plog/Log.h>
 
 // Size of keystroke table which holds all valid keys
-#define KEYSTROKE_TABLE_SIZE 27
+#define KEYSTROKE_TABLE_SIZE 28
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -1533,9 +1533,9 @@ void CCompositionProcessorEngine::InitKeyStrokeTable()
 	_keystrokeTable[26].Function = FUNCTION_INPUT;
 
 	// TILDA key
-	/*_keystrokeTable[27].VirtualKey = 192;
+	_keystrokeTable[27].VirtualKey = 192;
 	_keystrokeTable[27].Modifiers = 0;
-	_keystrokeTable[27].Function = FUNCTION_INPUT;*/
+	_keystrokeTable[27].Function = FUNCTION_INPUT;
 }
 
 void CCompositionProcessorEngine::ShowAllLanguageBarIcons()

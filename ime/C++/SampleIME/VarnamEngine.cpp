@@ -20,9 +20,6 @@ BOOL VarnamEngine::Initialize()
 	if (rc != VARNAM_SUCCESS) {
 		return FALSE;
 	}
-
-	LOGD << "Suggestions will be at: " << varnam_get_suggestions_file(_handle);
-
 	return TRUE;
 }
 
